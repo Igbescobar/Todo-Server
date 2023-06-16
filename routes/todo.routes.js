@@ -6,6 +6,7 @@ router.get("/getAllTodos", (req, res, next) => {
 
   Todo
     .find()
+    .sort({ status: 1 })
     .then(response => res.json(response))
     .catch(err => next(err))
 });

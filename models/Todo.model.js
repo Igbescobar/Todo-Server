@@ -11,7 +11,7 @@ const todoSchema = new mongoose.Schema({
         default: 'pending'
     },
     timestamp: {
-        type: String,
+        type: Date,
         default: Date.now()
     }
 });
