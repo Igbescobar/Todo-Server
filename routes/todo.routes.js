@@ -6,7 +6,7 @@ router.get("/getAllTodos", (req, res, next) => {
 
   Todo
     .find()
-    .sort({ status: 1 })
+    // .sort({ completed: 1 })
     .then(response => res.json(response))
     .catch(err => next(err))
 });
@@ -24,10 +24,10 @@ router.post("/saveTodo", (req, res, next) => {
 router.put('/:todo_id/edit', (req, res, next) => {
 
   const { todo_id } = req.params
-  const { task } = req.body
+  const { task, completed } = req.body
 
   Todo
-    .findByIdAndUpdate(todo_id, { task })
+    .findByIdAndUpdate(todo_id, { task, completed })
     .then(response => res.json(response))
     .catch(err => next(err))
 })
