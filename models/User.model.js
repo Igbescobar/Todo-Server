@@ -17,8 +17,11 @@ const userSchema = new Schema(
       type: String,
       required: [true, 'Username is required.'],
       minlength: [3, 'Username must be longer']
-
-    }
+    },
+    todos: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Todo'
+    }]
   },
   {
     timestamps: true

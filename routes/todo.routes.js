@@ -1,33 +1,49 @@
 const router = require("express").Router();
 
+const User = require("../models/User.model");
 const Todo = require('./../models/Todo.model')
 
-router.get("/getAllTodos", (req, res, next) => {
+const { isAuthenticated } = require("../middlewares/verifyToken.middleware")
+
+router.get("/getAllTodos", isAuthenticated, (req, res, next) => {
+
+  const userId = req.user._id;
 
   Todo
-    .find()
-    // .sort({ completed: 1 })
-    .then(response => res.json(response))
-    .catch(err => next(err))
+    .find({ user: userId })
+    .then(todos => res.json(todos))
+    .catch(err => next(err));
 });
 
-router.post("/saveTodo", (req, res, next) => {
 
-  const { task } = req.body
+router.post("/:user_id/saveTodo", (req, res, next) => {
+  const { task } = req.body;
+  const { user_id } = req.params;
 
   Todo
-    .create({ task })
-    .then(response => res.json(response))
-    .catch(err => next(err))
+    .create({ task, user: user_id })
+    .then(todo => {
+      return (
+        User
+          .findByIdAndUpdate(user_id, { $push: { todos: todo._id } }, { new: true }
+          ));
+    })
+    .then(user => {
+      res.json({ user });
+    })
+    .catch(err => {
+      next(err);
+    });
 });
+
 
 router.put('/:todo_id/edit', (req, res, next) => {
 
   const { todo_id } = req.params
-  const { task, completed } = req.body
+  const { task } = req.body
 
   Todo
-    .findByIdAndUpdate(todo_id, { task, completed })
+    .findByIdAndUpdate(todo_id, { task })
     .then(response => res.json(response))
     .catch(err => next(err))
 })
