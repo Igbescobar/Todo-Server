@@ -5,15 +5,15 @@ const Todo = require('./../models/Todo.model')
 
 const { isAuthenticated } = require("../middlewares/verifyToken.middleware")
 
-router.get("/getAllTodos", isAuthenticated, (req, res, next) => {
-
-  const userId = req.user._id;
+router.get("/:user_id/getAllTodos", (req, res, next) => {
+  const { user_id } = req.params;
 
   Todo
-    .find({ user: userId })
+    .find({ user: user_id })
     .then(todos => res.json(todos))
     .catch(err => next(err));
 });
+
 
 
 router.post("/:user_id/saveTodo", (req, res, next) => {
